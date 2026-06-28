@@ -33,6 +33,16 @@ st.set_page_config(
     layout="wide"
 )
 
+st.markdown("""
+    <style>
+    .block-container {
+        max-width: 95%;
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # Load Model and Columns
 @st.cache_resource
 def load_model():
@@ -65,7 +75,7 @@ report_df = get_predictions()
 
 # Sidebar
 st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", [
+page = st.sidebar.selectbox("Go to", [
     "Overview",
     "EDA Insights",
     "Churn Predictions",
@@ -109,30 +119,33 @@ elif page == "EDA Insights":
     st.title("📈 EDA Insights")
     st.markdown("---")
 
+    # Map numeric predictions to readable labels
+    report_df['Churn Status'] = report_df['Predicted Churn'].map({0: 'Retained', 1: 'Churned'})
+    
     st.subheader("Monthly Charges by Churn Status")
     fig, ax = plt.subplots()
-    sns.boxplot(data=report_df, x='Predicted Churn', y='Monthly Charges', ax=ax)
+    sns.boxplot(data=report_df, x='Churn Status', y='Monthly Charges', ax=ax)
     ax.set_xticklabels(['Retained', 'Churned'])
     ax.set_title("Monthly Charges by Churn Status")
     st.pyplot(fig)
 
     st.subheader("Churn by Contract Type")
     fig, ax = plt.subplots()
-    sns.countplot(data=report_df, x='Contract', hue='Predicted Churn', ax=ax)
+    sns.countplot(data=report_df, x='Contract', hue='Churn Status', ax=ax)
     ax.set_title("Churn Distribution by Contract Type")
     plt.xticks(rotation=45)
     st.pyplot(fig)
 
     st.subheader("Tenure Months by Churn Status")
     fig, ax = plt.subplots()
-    sns.boxplot(data=report_df, x='Predicted Churn', y='Tenure Months', ax=ax)
+    sns.boxplot(data=report_df, x='Churn Status', y='Tenure Months', ax=ax)
     ax.set_xticklabels(['Retained', 'Churned'])
     ax.set_title("Tenure Months by Churn Status")
     st.pyplot(fig)
 
     st.subheader("Churn by Internet Service")
     fig, ax = plt.subplots()
-    sns.countplot(data=report_df, x='Internet Service', hue='Predicted Churn', ax=ax)
+    sns.countplot(data=report_df, x='Internet Service', hue='Churn Status', ax=ax)
     ax.set_title("Churn Distribution by Internet Service")
     st.pyplot(fig)
 
