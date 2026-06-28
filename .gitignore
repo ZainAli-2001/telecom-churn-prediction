@@ -16,8 +16,10 @@ __pycache__/
 *.pkl
 
 # Data files (large files)
-data/raw/
-data/processed/
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
 
 # Environment variables
 .env
